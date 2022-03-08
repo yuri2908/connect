@@ -12788,3 +12788,11 @@ a.channels-tag.green-bg {
 a.channels-tag.yellow-bg {
     color: #fff;
 }
+@media screen and (max-width: 480px) {
+  section.plan-description h1 {
+    display: none !important;
+  }
+      audio {
+  max-width:180px !important;
+  }
+}
