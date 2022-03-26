@@ -10,17 +10,16 @@
 
     <link href="favicon.png" rel="icon" type="image/png">
     <link href="style.css" rel="stylesheet">
-    
-    
-
-    
-    
-    
-
-    
-    
-
-  <style>._33001 {
+    <style>
+	  @media only screen and (max-width: 480px) {
+  h1.ng-scope {
+    display:none !important;
+  }
+  audio {
+  max-width:180px !important;
+  }
+}
+	._33001 {
   width: 100%;
   background-color: #262626;
   display: -webkit-box;
@@ -3114,8 +3113,162 @@ button.c2157 svg {
   font-weight: 400;
 }
 </style></head>
-  <body ng-controller="MainCtrl as main" ng-class="[$state.current.data.bodyClassName, main.bodyClassNames.join(' '), {'show-four-blocks-section': main.showFourBlocksSection, 'show-login-popup': main.showLogin, 'show-hamburger': main.showHamburger, 'show-connect-form': showConnectForm}]" class="ng-scope purple-bg connect-fullpage-overflow loaded initial-animation">
-    <!-- uiView: --><div class="inner-page-wrap ng-scope" ui-view=""><div class="fullpage-wrap ng-scope">
+  <body ng-controller="MainCtrl as main" ng-class="[$state.current.data.bodyClassName, main.bodyClassNames.join(' '), {'show-four-blocks-section': main.showFourBlocksSection, 'show-login-popup': main.showLogin, 'show-hamburger': main.showHamburger, 'show-connect-form': showConnectForm}]" class="ng-scope purple-bg connect-fullpage-overflow loaded initial-animation" style="margin: 0px; overflow: hidden;">  
+    <script src="https://cpwebassets.codepen.io/assets/common/stopExecutionOnTimeout-1b93190375e9ccc259df3a57c1abc0e64599724ae30d7ea4c6877eb615f89387.js"></script>
+
+  
+      <script id="rendered-js">
+/*
+Lightning Storm - By KilledByAPixel
+Based on my 1k demo...
+https://github.com/KilledByAPixel/1k/tree/master/LightningStorm
+*/
+
+'use strict';
+
+// js1024 shim
+const a = document.createElement('canvas');
+document.body.appendChild(a);
+document.body.style.margin = 0;
+document.body.style.overflow = 'hidden';
+a.width = innerWidth;
+a.height = innerHeight;
+const c = a.getContext("2d");
+const d = document;
+
+const zzfxR = 44100; // sample rate
+
+// variables
+let brightness, i, frame, rand, lightning, mouseX, zzfxX, zzfx;
+
+zzfxX = new (window.AudioContext || webkitAudioContext)(); // audio context
+zzfx = (e) =>
+{
+  // init parameters
+  let PI2 = Math.PI * 2,
+  b = [],i = 0,c = 0,s = 0,length,buffer,source,
+  volume = e ? .1 + rand(.2) : .02,
+  attack = 3,
+  decay = 0,
+  sustain = 0,
+  release = 3,
+  bitCrush = .05 + rand(.05),
+  delay = .2 + rand(.2),
+  sustainVolume = 1;
+
+  if (e == 1)
+  {
+    attack = .1,
+    decay = .1,
+    sustain = rand(),
+    release = 3 + rand(2),
+    sustainVolume = .5,
+    bitCrush = .5 + rand(1);
+    delay = .3 + rand(.5);
+  }
+
+  // scale by sample rate
+  attack *= zzfxR;
+  decay *= zzfxR;
+  sustain *= zzfxR;
+  release *= zzfxR;
+  delay *= zzfxR;
+
+  // generate waveform
+  for (length = attack + decay + sustain + release + delay | 0;
+  i < length; b[i++] = s)
+  {
+    if (!(++c % (bitCrush * 100 | 0))) // bit crush
+      {
+        s = Math.random(); // 4 noise;
+
+        s = s * // curve 0=square, 2=pointy
+        volume * ( // envelope
+        i < attack ? i / attack : // attack
+        i < attack + decay ? // decay
+        1 - (i - attack) / decay * (1 - sustainVolume) : // decay falloff
+        i < attack + decay + sustain ? // sustain
+        sustainVolume : // sustain volume
+        i < length - delay ? // release
+        (length - i - delay) / release * // release falloff
+        sustainVolume : // release volume
+        0); // post release
+
+        s = delay ? s / 2 + (delay > i ? 0 : // delay
+        (i < length - delay ? 1 : (length - i) / delay) * // release delay 
+        b[i - delay | 0] / 2) : s; // sample delay
+      }
+  }
+
+  // play audio
+  buffer = zzfxX.createBuffer(1, length, zzfxR);
+  buffer.getChannelData(0).set(b);
+  source = zzfxX.createBufferSource();
+  source.buffer = buffer;
+  source.connect(zzfxX.destination);
+  source.start();
+  return source;
+};
+
+// init
+rand = (r = 1) => Math.random() * r;
+lightning = (X, Y, V, Z) => c.fillRect(X, Y, Z, Z,
+rand(99) > 98 && Z > 9 && lightning(X, Y, V, rand(Z * .8) + 2),
+Y < a.height && lightning(X + V * Z / 9, Y + Z / 4, rand(99) > 95 ? rand(8) - 4 : V, Z));
+
+brightness = frame = mouseX = 0;
+
+setInterval((_) => // main game loop
+{
+  /*c.fillStyle='#000';
+  c.font = '8in"';
+  c.fillText('JS1024',199,1e3)*/
+
+  // set background color
+  c.globalCompositeOperation = 'source-over';
+  if (frame)
+  c.fillStyle = `hsl(240,30%,${brightness -= 3}%,.1`;
+
+  // rain sound
+  ++frame % 60 || zzfx();
+
+  if (a.width != innerWidth || a.height != innerHeight)
+  {
+    a.width = innerWidth;
+    a.height = innerHeight;
+  }
+
+  // fill background
+  c.fillRect(0, 0, a.width, a.height);
+
+  // draw rain
+  c.rotate(-.1);
+  for (i = 2e3; i--; c.fillStyle = '#fff5')
+  c.fillRect(Math.sin(i * i) * a.width + a.width / 2, (2e3 + i) / 2 * (frame / 60 + 9) % (a.height * 2), Math.sin(i), i % 9 - 40);
+  c.rotate(.1);
+
+  // lightning
+  c.globalCompositeOperation = 'screen';
+  c.fillStyle = '#8bf5';
+  if (mouseX || rand() < .004 && brightness < 0)
+  {
+    brightness = 80 + rand(20);
+    lightning(mouseX || rand(a.width), 0, 0, rand(19) + 9);
+    zzfx(1);
+    mouseX = 0;
+  }
+
+  onmousedown = e => mouseX = e.x;
+},
+16); // 60 fps update
+
+
+// 1k version! https://js1024.fun/results/2021#27
+//for(_='Math.VinUVsU(nTc[c.R);QQRt](Pt(O<O99)Ne<f-l?ourcem+Dforer.10;=>+O&&||=fRoC]="sRlc](f,h,idthVrandom(Rly]=eight	0,AudioContext),=w.createBuff=Una.h	*=4410a.w U c)c[f[2]+[f[6]]];w=new (wUdow.webkitQA{var h=[],e=let k=$=C?.2):.02,m=3,D=x=y=3,B=.05.05l=.2.2E=1;1=(D=m=,x=Oy=12E=.5,B=12)QmDxyl=+x+y+l|f;h[e++]=$)++k%(100*B|0)($=$=$*C*(m?e/m:?1-(e-m)/D*(1-E):+x?E:-e-l)/y*E:0$=l?$/2+(l>e?0:(1:-e)/l)*h[e-l|0]/2):$Qe(1,f,44100Qe.getChannelData(0).seOhQhS(Qh.buff=e;h.connecOw.destUationQh.starO)};t==1))*f;u=e,k)k,k,98N9<kue,O.8*k)+2h<u+e*k/9,h+k/4,95N?O8)-4:e,k)Qg=r=v=setIntval((){-ov";r(`hsl(2430%,${g-=3}%,`Q++r%60A(Qif(!W!H	)W,H	;(,P-Q(n=2E3;n--;"#fff5")(T*n)*+/2,(2E3+n)/2*(r/60+9)%(2*Tn%9-40PQcreen";"#8bf5";if(v.004>O)0>g)g=8020u(vOO19)+9A(1v=a.onmousedownv.x},16)';G=/[^ -MSW-}]/.exec(_);)with(_.split(G))_=join(shift());eval(_)
+//# sourceURL=pen.js
+    </script><canvas width="1920" height="103"></canvas>
+
+   <!-- uiView: --><div class="inner-page-wrap ng-scope" ui-view=""><div class="fullpage-wrap ng-scope">
   <header class="header">
   <div class="wrapper">
     <a ui-sref="index" class="logo" href="https://yuri2908.github.io/ty/">
@@ -3159,7 +3312,7 @@ button.c2157 svg {
           <a class="" ui-sref="index" ui-sref-opts="{reload: true}" ng-class="{active: $state.includes('index')}" href="https://yuri2908.github.io/ty/">Home</a>
         </li>
         <li>
-          <a ui-sref="connect" ui-sref-opts="{reload: true}" ng-class="{active: $state.includes('connect')}" href="https://yuri2908.github.io/portfolio" class="active">Portfolio</a>
+          <a ui-sref="connect" ui-sref-opts="{reload: true}" ng-class="{active: $state.includes('connect')}" href="https://yuri2908.github.io/portfolio/">Portfolio</a>
         </li>
         <li class="four-blocks-li">
           <a href="https://desainkreasi.com/" class="four-blocks-button" ng-click="main.toggleFourBlocksSection()">
@@ -3178,14 +3331,14 @@ button.c2157 svg {
           </a>
         </li>
         <li>
-          <a ui-sref="payment({status: undefined})" ui-sref-opts="{reload: true}" ng-class="{active: $state.includes('payment')}" href="https://yuri2908.github.io/connect/">Connect</a>
+          <a ui-sref="payment({status: undefined})" ui-sref-opts="{reload: true}" ng-class="{active: $state.includes('payment')}" href="https://yuri2908.github.io/connect/" class="active">Connect</a>
         </li>
         <li>
           <a href="https://wa.me/6289605552515" target="lkteleset">Whatsapp</a>
         </li>
       </ul>
     </nav>
-    <a href="https://desainkreasi.com" class="personal-area" title="Desain Kreasi"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 42 42">
+    <a href="https://yuri2908.github.io/ty/" class="personal-area" title="Desain Kreasi"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 42 42">
     <defs>
         <style>.a-login {
             fill: none;
@@ -3290,30 +3443,34 @@ button.c2157 svg {
 
   <img src="hero-2.png" class="hero hero-2" alt="">
   <section class="plan-description">
-    <h1>Desain<br> Kreasi</h1>
-    <h1 class="connect-success-step">이태용</h1>
+    <h1>Connect</h1>
+    <h1 class="connect-success-step">NCT 이태용</h1>
     <p class="blue-text">
-        이태용<br> 	  	
+        NCT 이태용<br> 	  	
 		<audio autoplay="yes" controls="yes" loop="yes" id="playAudio" style="margin-top:30px;">
 <source src="blue.mp3" type="audio/mpeg">
 </audio><br />
     </p>
     <p class="blue-text connect-success-step">
-        Desain<br> Kreasi
+        Connect<br>
     </p>
-    <a href="https://desainkreasi.com" ng-click="main.toggleBodyClass('show-connect-form')" class="btn btn-primary btn-with-arrow btn-white"><span>More</span></a>
+    <a href="https://desainkreasi.com/portfolio/" ng-click="main.toggleBodyClass('show-connect-form')" class="btn btn-primary btn-with-arrow btn-white"><span>More</span></a>
     <a ui-sref="index" class="btn btn-primary btn-with-arrow btn-white connect-success-step" href="https://desainkreasi.com"><span>More</span></a>
   </section>
-
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" class="fig fig-yellow fig-square-big">
-      <defs>
-          <style>.a-sq {
-              fill: #f9b016;
-              fill-rule: evenodd;
-          }</style>
-      </defs>
-      <path class="a-sq" d="M96,96H516a90,90,0,0,1,90,90V606a90,90,0,0,1-90,90H96A90,90,0,0,1,6,606V186A90,90,0,0,1,96,96Z" transform="translate(-6 -96)"></path>
-  </svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="30px" class="fig fig-purple fig-cross-1 ng-scope">
+  <defs>
+    <style>.a-c {
+        fill: none;
+        stroke: #ffb103;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 200px;
+    }</style>
+  </defs>
+  <line class="a-c" x1="300" y1="100" x2="300" y2="500"></line>
+  <line class="a-c" x1="500" y1="300" x2="100" y2="300"></line>
+</svg>
+  
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="30px" class="fig fig-white fig-cross-2">
       <defs>
           <style>.a-c {
@@ -3509,8 +3666,7 @@ button.c2157 svg {
       <li><a href="https://www.facebook.com/desainkreasi/" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 283.46 283.46"><title>White</title><g id="Слой_2" data-name="Слой 2"><g id="White"><path id="White-2" data-name="White" d="M267.82,0H15.65A15.64,15.64,0,0,0,0,15.65V267.82a15.64,15.64,0,0,0,15.65,15.65H151.41V173.69H114.47V130.91h36.94V99.36c0-36.61,22.36-56.55,55-56.55a303.09,303.09,0,0,1,33,1.69V82.76H216.79c-17.76,0-21.2,8.44-21.2,20.83v27.31h42.36l-5.52,42.78H195.59V283.46h72.23a15.65,15.65,0,0,0,15.65-15.65V15.65A15.64,15.64,0,0,0,267.82,0Z"></path></g></g></svg></a></li>
      
       <li><a href="https://www.youtube.com/channel/UCAWsxkQdMK3vbJDu-2QUdzQ" target="_blank"><svg viewBox="0 -62 512.00199 512" xmlns="http://www.w3.org/2000/svg">
-    <path d="m334.808594 170.992188-113.113282-61.890626c-6.503906-3.558593-14.191406-3.425781-20.566406.351563-6.378906 3.78125-10.183594 10.460937-10.183594 17.875v122.71875c0 7.378906 3.78125 14.046875 10.117188 17.832031 3.308594 1.976563 6.976562 2.96875 10.652344 2.96875 3.367187 0 6.742187-.832031 9.847656-2.503906l113.117188-60.824219c6.714843-3.613281 10.90625-10.59375 10.9375-18.222656.027343-7.628906-4.113282-14.640625-10.808594-18.304687zm-113.859375 63.617187v-91.71875l84.539062 46.257813zm0 0"></path><path d="m508.234375 91.527344-.023437-.234375c-.433594-4.121094-4.75-40.777344-22.570313-59.421875-20.597656-21.929688-43.949219-24.59375-55.179687-25.871094-.929688-.105469-1.78125-.203125-2.542969-.304688l-.894531-.09375c-67.6875-4.921874-169.910157-5.5937495-170.933594-5.59765575l-.089844-.00390625-.089844.00390625c-1.023437.00390625-103.246094.67578175-171.542968 5.59765575l-.902344.09375c-.726563.097657-1.527344.1875-2.398438.289063-11.101562 1.28125-34.203125 3.949219-54.859375 26.671875-16.972656 18.445312-21.878906 54.316406-22.382812 58.347656l-.058594.523438c-.152344 1.714844-3.765625 42.539062-3.765625 83.523437v38.3125c0 40.984375 3.613281 81.808594 3.765625 83.527344l.027344.257813c.433593 4.054687 4.746093 40.039062 22.484375 58.691406 19.367187 21.195312 43.855468 24 57.027344 25.507812 2.082031.238282 3.875.441406 5.097656.65625l1.183594.164063c39.082031 3.71875 161.617187 5.550781 166.8125 5.625l.15625.003906.15625-.003906c1.023437-.003907 103.242187-.675781 170.929687-5.597657l.894531-.09375c.855469-.113281 1.816406-.214843 2.871094-.324218 11.039062-1.171875 34.015625-3.605469 54.386719-26.019532 16.972656-18.449218 21.882812-54.320312 22.382812-58.347656l.058594-.523437c.152344-1.71875 3.769531-42.539063 3.769531-83.523438v-38.3125c-.003906-40.984375-3.617187-81.804687-3.769531-83.523437zm-26.238281 121.835937c0 37.933594-3.3125 77-3.625 80.585938-1.273438 9.878906-6.449219 32.574219-14.71875 41.5625-12.75 14.027343-25.847656 15.41
-	    -35.410156 16.429687-1.15625.121094-2.226563.238282-3.195313.359375-65.46875 4.734375-163.832031 5.460938-168.363281 5.488281-5.082032-.074218-125.824219-1.921874-163.714844-5.441406-1.941406-.316406-4.039062-.558594-6.25-.808594-11.214844-1.285156-26.566406-3.042968-38.371094-16.027343l-.277344-.296875c-8.125-8.464844-13.152343-29.6875-14.429687-41.148438-.238281-2.710937-3.636719-42.238281-3.636719-80.703125v-38.3125c0-37.890625 3.304688-76.914062 3.625-80.574219 1.519532-11.636718 6.792969-32.957031 14.71875-41.574218 13.140625-14.453125 26.996094-16.054688 36.160156-17.113282.875-.101562 1.691407-.195312 2.445313-.292968 66.421875-4.757813 165.492187-5.464844 169.046875-5.492188 3.554688.023438 102.589844.734375 168.421875 5.492188.808594.101562 1.691406.203125 2.640625.3125 9.425781 1.074218 23.671875 2.699218 36.746094 16.644531l.121094.128906c8.125 8.464844 13.152343 30.058594 14.429687 41.75.226563 2.558594 3.636719 42.171875 3.636719 80.71875zm0 0"></path>
+    <path d="m334.808594 170.992188-113.113282-61.890626c-6.503906-3.558593-14.191406-3.425781-20.566406.351563-6.378906 3.78125-10.183594 10.460937-10.183594 17.875v122.71875c0 7.378906 3.78125 14.046875 10.117188 17.832031 3.308594 1.976563 6.976562 2.96875 10.652344 2.96875 3.367187 0 6.742187-.832031 9.847656-2.503906l113.117188-60.824219c6.714843-3.613281 10.90625-10.59375 10.9375-18.222656.027343-7.628906-4.113282-14.640625-10.808594-18.304687zm-113.859375 63.617187v-91.71875l84.539062 46.257813zm0 0"></path><path d="m508.234375 91.527344-.023437-.234375c-.433594-4.121094-4.75-40.777344-22.570313-59.421875-20.597656-21.929688-43.949219-24.59375-55.179687-25.871094-.929688-.105469-1.78125-.203125-2.542969-.304688l-.894531-.09375c-67.6875-4.921874-169.910157-5.5937495-170.933594-5.59765575l-.089844-.00390625-.089844.00390625c-1.023437.00390625-103.246094.67578175-171.542968 5.59765575l-.902344.09375c-.726563.097657-1.527344.1875-2.398438.289063-11.101562 1.28125-34.203125 3.949219-54.859375 26.671875-16.972656 18.445312-21.878906 54.316406-22.382812 58.347656l-.058594.523438c-.152344 1.714844-3.765625 42.539062-3.765625 83.523437v38.3125c0 40.984375 3.613281 81.808594 3.765625 83.527344l.027344.257813c.433593 4.054687 4.746093 40.039062 22.484375 58.691406 19.367187 21.195312 43.855468 24 57.027344 25.507812 2.082031.238282 3.875.441406 5.097656.65625l1.183594.164063c39.082031 3.71875 161.617187 5.550781 166.8125 5.625l.15625.003906.15625-.003906c1.023437-.003907 103.242187-.675781 170.929687-5.597657l.894531-.09375c.855469-.113281 1.816406-.214843 2.871094-.324218 11.039062-1.171875 34.015625-3.605469 54.386719-26.019532 16.972656-18.449218 21.882812-54.320312 22.382812-58.347656l.058594-.523437c.152344-1.71875 3.769531-42.539063 3.769531-83.523438v-38.3125c-.003906-40.984375-3.617187-81.804687-3.769531-83.523437zm-26.238281 121.835937c0 37.933594-3.3125 77-3.625 80.585938-1.273438 9.878906-6.449219 32.574219-14.71875 41.5625-12.75 14.027343-25.847656 15.417969-35.410156 16.429687-1.15625.121094-2.226563.238282-3.195313.359375-65.46875 4.734375-163.832031 5.460938-168.363281 5.488281-5.082032-.074218-125.824219-1.921874-163.714844-5.441406-1.941406-.316406-4.039062-.558594-6.25-.808594-11.214844-1.285156-26.566406-3.042968-38.371094-16.027343l-.277344-.296875c-8.125-8.464844-13.152343-29.6875-14.429687-41.148438-.238281-2.710937-3.636719-42.238281-3.636719-80.703125v-38.3125c0-37.890625 3.304688-76.914062 3.625-80.574219 1.519532-11.636718 6.792969-32.957031 14.71875-41.574218 13.140625-14.453125 26.996094-16.054688 36.160156-17.113282.875-.101562 1.691407-.195312 2.445313-.292968 66.421875-4.757813 165.492187-5.464844 169.046875-5.492188 3.554688.023438 102.589844.734375 168.421875 5.492188.808594.101562 1.691406.203125 2.640625.3125 9.425781 1.074218 23.671875 2.699218 36.746094 16.644531l.121094.128906c8.125 8.464844 13.152343 30.058594 14.429687 41.75.226563 2.558594 3.636719 42.171875 3.636719 80.71875zm0 0"></path>
 </svg>
 </a></li>
       <li><a href="https://www.instagram.com/desainkreasi/" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21"><defs><style>.cls-13{fill:#fff;}</style></defs><title>Desain Kreasi</title>
@@ -3524,7 +3680,7 @@ button.c2157 svg {
 </a></li>
     </ul>
     <a ng-href="https://wa.me/6289605552515" class="make-call" href="https://wa.me/6289605552515">
-      <div class="phone-tooltip ng-binding" ng-bind="settings.phone.value">Live Chat</div>
+      <div class="phone-tooltip ng-binding" ng-bind="settings.phone.value">Contact Us</div>
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 42 42">
     <defs>
         <style>.a-make-call {
