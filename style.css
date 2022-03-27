@@ -2436,6 +2436,7 @@ body.payment-fullpage-overflow {
         z-index: 1;
         width: calc(100% - 13vw);
         right: auto;
+		margin-top:150px !important;
     }
 }
 @media screen and (max-width: 766px) {
