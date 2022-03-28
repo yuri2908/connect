@@ -8702,6 +8702,7 @@ body.loaded .header-inner-page .plan-description .for-subscribers,
     animation-duration: 0.5s;
     animation-timing-function: ease;
     animation-fill-mode: forwards;
+	color:#000;
 }
 @keyframes plan-animation {
     0% {
