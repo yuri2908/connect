@@ -11,6 +11,18 @@
     <link href="favicon.png" rel="icon" type="image/png">
     <link href="style.css" rel="stylesheet">
     <style>
+img.animation {
+    -webkit-animation: mover 2s infinite  alternate;
+    animation: mover 2s infinite  alternate;
+}
+@-webkit-keyframes mover {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-20px); }
+}
+@keyframes mover {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-20px); }
+}
 	  @media only screen and (max-width: 480px) {
   h1.ng-scope {
     display:none !important;
@@ -3364,7 +3376,7 @@ setInterval((_) => // main game loop
 
   <!-- uiView: --><main ng-class="[$state.current.data.mainClassName]" ui-view="" class="ng-scope fullpage-content connect-fullpage"><div class="wrapper ng-scope">
 
-  <img src="hero-2.png" class="hero hero-2" alt="">
+  <img src="hero-2.png" class="hero hero-2 animation" alt="Desain Kreasi">
   <section class="plan-description">
     <h1>Connect</h1>
     <h1 class="connect-success-step">NCT 이태용</h1>
@@ -3942,7 +3954,7 @@ setInterval((_) => // main game loop
 </section>
 
     <section class="main-menu-item only-menu-section">
-  <img src="hero.png" class="hero" alt="">
+  <img src="hero.png" class="hero animation" alt="">
   <a ui-sref="main.about-plan" class="btn btn-primary btn-yellow btn-header" href="//about-plan">О тарифе</a>
 
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="30px" class="fig fig-purple fig-cross-1">
@@ -4038,7 +4050,7 @@ setInterval((_) => // main game loop
 <div class="four-blocks ng-scope">
   <div class="block white-bg home-page-block">
     <a ui-sref="index" ng-click="main.toggleFourBlocksSection()" href="https://desainkreasi.com">
-      <img class="hero" src="hero.png" alt="">
+      <img class="hero animation" src="hero.png" alt="">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="30px" class="fig fig-purple fig-cross-1">
         <defs>
           <style>
