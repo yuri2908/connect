@@ -8520,6 +8520,8 @@ body.loaded .header-inner-page .fig-square-3 {
 .fullpage-wrap,
 .inner-move {
     transition: transform 0.5s;
+	background-image:url("cloud.png");
+	background-size:cover;
 }
 .show-four-blocks-section .fullpage-wrap,
 .show-menu .fullpage-wrap {
